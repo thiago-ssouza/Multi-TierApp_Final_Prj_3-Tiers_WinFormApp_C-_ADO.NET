@@ -5,9 +5,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace ProgramsCoursesStudentsEnrollments
 {
@@ -59,15 +61,36 @@ namespace ProgramsCoursesStudentsEnrollments
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            dataGridView1.DataSource = Data.Enrollments.GetEnrollments();
+            //dataGridView1.DataSource = Data.Enrollments.GetEnrollments();
+
+            //dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
+
+            //dataGridView1.Columns["StId"].HeaderText = "Student ID";
+            //dataGridView1.Columns["CId"].HeaderText = "Course ID";
+            //dataGridView1.Columns["FinalGrade"].HeaderText = "Final Grade";
+            //dataGridView1.Columns["StId"].DisplayIndex = 0;
+            //dataGridView1.Columns["CId"].DisplayIndex = 1;
+            //dataGridView1.Columns["FinalGrade"].DisplayIndex = 2;
+
+            dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
             dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
 
             dataGridView1.Columns["StId"].HeaderText = "Student ID";
+            dataGridView1.Columns["StName"].HeaderText = "Student Name";
             dataGridView1.Columns["CId"].HeaderText = "Course ID";
+            dataGridView1.Columns["CName"].HeaderText = "Course Name";
             dataGridView1.Columns["FinalGrade"].HeaderText = "Final Grade";
+            dataGridView1.Columns["ProgId"].HeaderText = "Program ID";
+            dataGridView1.Columns["ProgName"].HeaderText = "Program Name";
+
             dataGridView1.Columns["StId"].DisplayIndex = 0;
-            dataGridView1.Columns["CId"].DisplayIndex = 1;
-            dataGridView1.Columns["FinalGrade"].DisplayIndex = 2;
+            dataGridView1.Columns["StName"].DisplayIndex = 1;
+            dataGridView1.Columns["CId"].DisplayIndex = 2;
+            dataGridView1.Columns["CName"].DisplayIndex = 3;
+            dataGridView1.Columns["FinalGrade"].DisplayIndex = 4;
+            dataGridView1.Columns["ProgId"].DisplayIndex = 5;
+            dataGridView1.Columns["ProgName"].DisplayIndex = 6;
+            //StId, StName, CId, CName, FinalGrade, ProgId, ProgName
 
         }
 

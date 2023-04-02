@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 
 namespace Data
 {
@@ -334,6 +335,55 @@ namespace Data
             {
                 return -1;
             }
+        }
+    }
+
+    internal class DispalyEnrollments
+    {
+        private static DataSet ds = DataTables.getDataSet();
+        internal static DataTable GetDisplayEnrollments()
+        {
+            var query = (
+            from enrollment in ds.Tables["Enrollments"].AsEnumerable()
+            from student in ds.Tables["Students"].AsEnumerable()
+            from course in ds.Tables["Courses"].AsEnumerable()
+            from program in ds.Tables["Programs"].AsEnumerable()
+            where enrollment.Field<string>("StId") ==
+            student.Field<string>("StId")
+            where enrollment.Field<string>("CId") ==
+            course.Field<string>("CId")
+            where student.Field<string>("ProgId") ==
+            program.Field<string>("ProgId")
+            select new
+            {
+                StId = student.Field<String>("StId"),
+                StName = student.Field<string>("StName"),
+                CId = course.Field<String>("CId"),
+                CName = course.Field<string>("CName"),
+                /// System.InvalidCastException: 'Cannot cast DBNull.Value to type 'System.Int32'. Please use a nullable type.'
+                //FinalGrade = enrollment.Field<Int32>("FinalGrade"),
+                FinalGrade = enrollment.Field<Int32?>("FinalGrade"),
+                ProgId = program.Field<String>("ProgId"),
+                ProgName = program.Field<string>("ProgName")
+                //StId, StName, CId, CName, FinalGrade, ProgId, ProgName
+                // and other columns you may need
+            });
+            DataTable result = new DataTable();
+            result.Columns.Add("StId");
+            result.Columns.Add("StName");
+            result.Columns.Add("CId");
+            result.Columns.Add("CName");
+            result.Columns.Add("FinalGrade");
+            result.Columns.Add("ProgId");
+            result.Columns.Add("ProgName");
+            //StId, StName, CId, CName, FinalGrade, ProgId, ProgName
+            // and other columns you may need
+            foreach (var x in query)
+            {
+                object[] allFields = { x.StId, x.StName, x.CId, x.CName, x.FinalGrade, x.ProgId, x.ProgName};
+                result.Rows.Add(allFields);
+            }
+            return result;
         }
     }
 }
