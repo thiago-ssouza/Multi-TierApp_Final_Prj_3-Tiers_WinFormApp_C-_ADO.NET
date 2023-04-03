@@ -317,6 +317,14 @@ namespace Data
 
     internal class Enrollments
     {
+        public string StId;
+        public string StName;
+        public string CId;
+        public string CName;
+        public string oldCId;
+        public string oldCName;
+        public Int32? FinalGrade;
+
         private static SqlDataAdapter adapter = DataTables.getAdapterEnrollments();
         private static DataSet ds = DataTables.getDataSet();
 
@@ -336,10 +344,90 @@ namespace Data
                 return -1;
             }
         }
+
+        internal static void InsertData(Enrollments enroll)
+        {
+            if (BusinessLayer.Enrollments.IsValidInsert(enroll))
+            {
+                DataRow line = ds.Tables["Enrollments"].NewRow();
+                try
+                {
+                    line.SetField("StId", enroll.StId);
+                    line.SetField("CId", enroll.CId);
+                    line.SetField("FinalGrade", enroll.FinalGrade);
+                    ds.Tables["Enrollments"].Rows.Add(line);
+
+                    adapter.Update(ds.Tables["Enrollments"]);
+                }
+                catch (SqlException)
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Database: Insertion rejected");
+                }
+                catch (Exception)
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Insertion rejected");
+                }
+
+            }
+        }
+
+        internal static void UpdateData(Enrollments enroll)
+        {
+            if (BusinessLayer.Enrollments.IsValidUpdate(enroll))
+            {
+                ProgramsCoursesStudentsEnrollments.Form1.UIMessage("ENTROU");
+                try
+                {
+                    var line = ds.Tables["Enrollments"].AsEnumerable()
+                                 .Where(s => s.Field<string>("StId") == enroll.StId && s.Field<string>("CId") == enroll.oldCId).SingleOrDefault();
+
+                    if (line != null)
+                    {
+                        ProgramsCoursesStudentsEnrollments.Form1.UIMessage("ENTROU 2");
+                        line.SetField("CId", enroll.CId);
+                        line.SetField("FinalGrade", enroll.FinalGrade);
+
+                        adapter.Update(ds.Tables["Enrollments"]);
+                    }
+                }
+                catch (SqlException)
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Database: Update rejected");
+                }
+                catch (Exception)
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Update rejected");
+                }
+            }
+        }
+
+        internal static void DeleteData(List<string> lId)
+        {
+            //try
+            //{
+            //    var lines = ds.Tables["Enrollments"].AsEnumerable()
+            //                     .Where(s => lId.Contains(s.Field<int>("ID")));
+            //    foreach (var line in lines)
+            //    {
+            //        line.Delete();
+            //    }
+
+            //    adapter.Update(ds.Tables["COMPANY"]);
+            //}
+            //catch (SqlException)
+            //{
+            //    Query1aPlus.Form1.UIMessage("Database: Deletion rejected");
+            //}
+            //catch (Exception)
+            //{
+            //    Query1aPlus.Form1.UIMessage("Data Layer: Deletion rejected");
+            //}
+        }
     }
 
     internal class DispalyEnrollments
     {
+
         private static DataSet ds = DataTables.getDataSet();
         internal static DataTable GetDisplayEnrollments()
         {

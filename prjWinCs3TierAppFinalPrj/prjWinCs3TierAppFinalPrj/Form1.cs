@@ -16,6 +16,7 @@ namespace ProgramsCoursesStudentsEnrollments
     public partial class Form1 : Form
     {
         internal static Form1 current;
+        internal static Boolean init;
 
         internal DataGridViewSelectedRowCollection c;
         public Form1()
@@ -26,6 +27,7 @@ namespace ProgramsCoursesStudentsEnrollments
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            init = false;
             new Form2();
             Form2.current.Visible = false;
             dataGridView1.Dock = DockStyle.Fill;
@@ -54,43 +56,48 @@ namespace ProgramsCoursesStudentsEnrollments
 
         private void enrollmentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            dataGridView1.ReadOnly = true;
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.RowHeadersVisible = true;
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            if(!init)
+            {
+                dataGridView1.ReadOnly = true;
+                dataGridView1.AllowUserToAddRows = false;
+                dataGridView1.AllowUserToDeleteRows = false;
+                dataGridView1.RowHeadersVisible = true;
+                dataGridView1.Dock = DockStyle.Fill;
+                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            //dataGridView1.DataSource = Data.Enrollments.GetEnrollments();
+                //dataGridView1.DataSource = Data.Enrollments.GetEnrollments();
 
-            //dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
+                //dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
 
-            //dataGridView1.Columns["StId"].HeaderText = "Student ID";
-            //dataGridView1.Columns["CId"].HeaderText = "Course ID";
-            //dataGridView1.Columns["FinalGrade"].HeaderText = "Final Grade";
-            //dataGridView1.Columns["StId"].DisplayIndex = 0;
-            //dataGridView1.Columns["CId"].DisplayIndex = 1;
-            //dataGridView1.Columns["FinalGrade"].DisplayIndex = 2;
+                //dataGridView1.Columns["StId"].HeaderText = "Student ID";
+                //dataGridView1.Columns["CId"].HeaderText = "Course ID";
+                //dataGridView1.Columns["FinalGrade"].HeaderText = "Final Grade";
+                //dataGridView1.Columns["StId"].DisplayIndex = 0;
+                //dataGridView1.Columns["CId"].DisplayIndex = 1;
+                //dataGridView1.Columns["FinalGrade"].DisplayIndex = 2;
 
-            dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
-            dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
+                dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
 
-            dataGridView1.Columns["StId"].HeaderText = "Student ID";
-            dataGridView1.Columns["StName"].HeaderText = "Student Name";
-            dataGridView1.Columns["CId"].HeaderText = "Course ID";
-            dataGridView1.Columns["CName"].HeaderText = "Course Name";
-            dataGridView1.Columns["FinalGrade"].HeaderText = "Final Grade";
-            dataGridView1.Columns["ProgId"].HeaderText = "Program ID";
-            dataGridView1.Columns["ProgName"].HeaderText = "Program Name";
+                dataGridView1.Columns["StId"].HeaderText = "Student ID";
+                dataGridView1.Columns["StName"].HeaderText = "Student Name";
+                dataGridView1.Columns["CId"].HeaderText = "Course ID";
+                dataGridView1.Columns["CName"].HeaderText = "Course Name";
+                dataGridView1.Columns["FinalGrade"].HeaderText = "Final Grade";
+                dataGridView1.Columns["ProgId"].HeaderText = "Program ID";
+                dataGridView1.Columns["ProgName"].HeaderText = "Program Name";
 
-            dataGridView1.Columns["StId"].DisplayIndex = 0;
-            dataGridView1.Columns["StName"].DisplayIndex = 1;
-            dataGridView1.Columns["CId"].DisplayIndex = 2;
-            dataGridView1.Columns["CName"].DisplayIndex = 3;
-            dataGridView1.Columns["FinalGrade"].DisplayIndex = 4;
-            dataGridView1.Columns["ProgId"].DisplayIndex = 5;
-            dataGridView1.Columns["ProgName"].DisplayIndex = 6;
-            //StId, StName, CId, CName, FinalGrade, ProgId, ProgName
+                dataGridView1.Columns["StId"].DisplayIndex = 0;
+                dataGridView1.Columns["StName"].DisplayIndex = 1;
+                dataGridView1.Columns["CId"].DisplayIndex = 2;
+                dataGridView1.Columns["CName"].DisplayIndex = 3;
+                dataGridView1.Columns["FinalGrade"].DisplayIndex = 4;
+                dataGridView1.Columns["ProgId"].DisplayIndex = 5;
+                dataGridView1.Columns["ProgName"].DisplayIndex = 6;
+                //StId, StName, CId, CName, FinalGrade, ProgId, ProgName
+                init = true;
+            }
+
 
         }
 
@@ -113,6 +120,7 @@ namespace ProgramsCoursesStudentsEnrollments
             dataGridView1.Columns["CId"].DisplayIndex = 0;
             dataGridView1.Columns["CName"].DisplayIndex = 1;
             dataGridView1.Columns["ProgId"].DisplayIndex = 2;
+            init = false;
 
         }
 
@@ -133,21 +141,25 @@ namespace ProgramsCoursesStudentsEnrollments
             dataGridView1.Columns["ProgName"].HeaderText = "Program Name";
             dataGridView1.Columns["ProgId"].DisplayIndex = 0;
             dataGridView1.Columns["ProgName"].DisplayIndex = 1;
+            init = false;
         }
 
         private void bindingSourceStudents_CurrentChanged(object sender, EventArgs e)
         {
             BusinessLayer.Students.UpdateStudents();
+            init = false;
         }
 
         private void bindingSourceCourses_CurrentChanged(object sender, EventArgs e)
         {
             BusinessLayer.Courses.UpdateCourses();
+            init = false;
         }
 
         private void bindingSourcePrograms_CurrentChanged(object sender, EventArgs e)
         {
             BusinessLayer.Programs.UpdatePrograms();
+            init = false;
         }
 
         private void dataGridView1_DataSourceChanged(object sender, EventArgs e)
@@ -156,6 +168,7 @@ namespace ProgramsCoursesStudentsEnrollments
             BusinessLayer.Enrollments.UpdateEnrollments();
             BusinessLayer.Courses.UpdateCourses();
             BusinessLayer.Programs.UpdatePrograms();
+            init = false;
         }
 
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -166,6 +179,66 @@ namespace ProgramsCoursesStudentsEnrollments
         internal static void msgInvalidFinalGrade()
         {
             MessageBox.Show("Order rejected: Final Grade cannot be less than 0 or greater than 100");
+        }
+
+        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2.current.Start(Form2.Modes.INSERT, null);
+            init = false;
+            BusinessLayer.Enrollments.UpdateEnrollments();
+            dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+
+        }
+
+        private void modifyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataGridViewSelectedRowCollection c = dataGridView1.SelectedRows;
+            if (c.Count == 0)
+            {
+                MessageBox.Show("A line must be selected for update");
+            }
+            else if (c.Count > 1)
+            {
+                MessageBox.Show("Only one line must be selected for update");
+            }
+            else
+            {
+                Form2.current.Start(Form2.Modes.UPDATE, c);
+                init = false;
+                BusinessLayer.Enrollments.UpdateEnrollments();
+                dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+            }
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataGridViewSelectedRowCollection c = dataGridView1.SelectedRows;
+            if (c.Count == 0)
+            {
+                MessageBox.Show("At least one line must be selected for deletion");
+            }
+            else // (c.Count > 1)
+            {
+                List<string> lId = new List<string>();
+                for (int i = 0; i < c.Count; i++)
+                {
+                    lId.Add("" + c[i].Cells["StId"].Value);
+                }
+                Data.Enrollments.DeleteData(lId);
+                init = false;
+            }
+        }
+
+        private void manageFinalGradeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            init = false;
+
+        }
+
+        internal static void UIMessage(string msg)
+        {
+            MessageBox.Show(msg);
         }
     }
 
