@@ -156,7 +156,7 @@ namespace BusinessLayer
             if (((dtStudents != null) && (dtStudents.Rows.Count > 0)) && ((dtCourses != null) && (dtCourses.Rows.Count > 0)))
             {
                 DataRow studentRow = dtStudents.Rows.Find(enroll.StId);
-                //DataRow courseRow = dtCourses.Rows.Find(enroll.CId);
+                DataRow courseRow = dtCourses.Rows.Find(enroll.CId);
                 DataRow courseOldRow = dtCourses.Rows.Find(enroll.oldCId);
                 //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Enter IF " + studentRow["ProgId"] + " " + courseRow["ProgId"]);
                 //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Enter IF " + studentRow["ProgId"] + " " + courseOldRow["ProgId"]);
@@ -171,12 +171,13 @@ namespace BusinessLayer
                             //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Enter FOREACH " + studentRow["ProgId"] + " " + courseRow["ProgId"] + " " + enrollRow["StId"].Equals(enroll.StId) + " " + enrollRow["CId"].Equals(enroll.CId) + " " + Convert.ToString(enrollRow["FinalGrade"] == null));
 
                             //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Enter FOREACH " + studentRow["ProgId"] + " " + courseRow["ProgId"] + " " + enrollRow["StId"] + "/" + enroll.StId + " " + enrollRow["CId"] + "/" + enroll.CId + " " + enrollRow["FinalGrade"]);
-                            
-                            
+
+
                             ///ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Enter FOREACH " + studentRow["ProgId"] + " " + courseOldRow["ProgId"] + " " + enrollRow["StId"] + "/" + enroll.StId + " " + enrollRow["CId"] + "/" + enroll.oldCId + " " + enrollRow["FinalGrade"] + " " + Convert.ToString(enrollRow["FinalGrade"].ToString().Equals("") ) + " " + enrollRow["FinalGrade"]);
 
                             //if (studentRow["ProgId"].Equals(courseRow["ProgId"]) && (enrollRow["StId"].Equals(enroll.StId) && enrollRow["CId"].Equals(enroll.CId)) && enrollRow["FinalGrade"] == null )
-                            if (studentRow["ProgId"].Equals(courseOldRow["ProgId"]) && (enrollRow["StId"].Equals(enroll.StId) && enrollRow["CId"].Equals(enroll.oldCId)) && enrollRow["FinalGrade"].ToString().Equals("") )
+                            //if (studentRow["ProgId"].Equals(courseOldRow["ProgId"]) && (enrollRow["StId"].Equals(enroll.StId) && enrollRow["CId"].Equals(enroll.oldCId)) && enrollRow["FinalGrade"].ToString().Equals("") )
+                            if (studentRow["ProgId"].Equals(courseRow["ProgId"]) && (enrollRow["StId"].Equals(enroll.StId) && enrollRow["CId"].Equals(enroll.oldCId)) && enrollRow["FinalGrade"].ToString().Equals(""))
                             {
                                 //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Enter FOREACH " + studentRow["ProgId"] + " " + courseRow["ProgId"] + " " + enrollRow["StId"].Equals(enroll.StId) + " " + enrollRow["CId"].Equals(enroll.CId) + " " + Convert.ToString(enrollRow["FinalGrade"] == null));
                                 //enroll.FinalGrade = Convert.ToInt32(enrollRow["FinalGrade"]);
