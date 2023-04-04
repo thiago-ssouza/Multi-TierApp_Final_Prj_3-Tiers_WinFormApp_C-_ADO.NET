@@ -1,4 +1,5 @@
-﻿using prjWinCs3TierAppFinalPrj;
+﻿using Data;
+using prjWinCs3TierAppFinalPrj;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -219,15 +220,53 @@ namespace ProgramsCoursesStudentsEnrollments
             }
             else // (c.Count > 1)
             {
-                List<string> lId = new List<string>();
+                List<Enrollments> lEnrollments = new List<Enrollments>();
                 for (int i = 0; i < c.Count; i++)
                 {
-                    lId.Add("" + c[i].Cells["StId"].Value);
+                    Enrollments enroll = new Enrollments();
+                    
+
+                    enroll.StId = "" + c[i].Cells["StId"].Value;
+                    enroll.StName = "" + c[i].Cells["StName"].Value;
+                    enroll.CId = "" + c[i].Cells["CId"].Value;
+                    enroll.CName = "" + c[i].Cells["CName"].Value;
+                    if ( !(("" + c[i].Cells["FinalGrade"].Value).Equals("")) )
+                    {
+                        enroll.FinalGrade = Convert.ToInt32("" + c[i].Cells["FinalGrade"].Value);
+                    }
+                    else
+                    {
+                        enroll.FinalGrade = null;
+                    }
+                    //enroll.FinalGrade = !( (""+c[i].Cells["FinalGrade"].Value).Equals("")) ? Convert.ToInt32(""+c[i].Cells["FinalGrade"].Value) : Convert.ToInt32(null);
+
+                    lEnrollments.Add(enroll);
                 }
-                Data.Enrollments.DeleteData(lId);
+                Data.Enrollments.DeleteData(lEnrollments);
+                BusinessLayer.Enrollments.UpdateEnrollments();
+                dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
                 init = false;
             }
         }
+
+        //private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    DataGridViewSelectedRowCollection c = dataGridView1.SelectedRows;
+        //    if (c.Count == 0)
+        //    {
+        //        MessageBox.Show("At least one line must be selected for deletion");
+        //    }
+        //    else // (c.Count > 1)
+        //    {
+        //        List<string> lId = new List<string>();
+        //        for (int i = 0; i < c.Count; i++)
+        //        {
+        //            lId.Add("" + c[i].Cells["StId"].Value);
+        //        }
+        //        Data.Enrollments.DeleteData(lId);
+        //        init = false;
+        //    }
+        //}
 
         private void manageFinalGradeToolStripMenuItem_Click(object sender, EventArgs e)
         {

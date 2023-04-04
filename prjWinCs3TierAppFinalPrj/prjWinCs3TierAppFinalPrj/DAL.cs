@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
 
@@ -375,7 +377,7 @@ namespace Data
         {
             if (BusinessLayer.Enrollments.IsValidUpdate(enroll))
             {
-                ProgramsCoursesStudentsEnrollments.Form1.UIMessage("ENTROU");
+                //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("ENTROU");
                 try
                 {
                     var line = ds.Tables["Enrollments"].AsEnumerable()
@@ -383,7 +385,7 @@ namespace Data
 
                     if (line != null)
                     {
-                        ProgramsCoursesStudentsEnrollments.Form1.UIMessage("ENTROU 2");
+                        //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("ENTROU 2");
                         line.SetField("CId", enroll.CId);
                         line.SetField("FinalGrade", enroll.FinalGrade);
 
@@ -401,28 +403,104 @@ namespace Data
             }
         }
 
-        internal static void DeleteData(List<string> lId)
+        internal static void DeleteData(List<Enrollments> lEnrollments)
         {
-            //try
-            //{
-            //    var lines = ds.Tables["Enrollments"].AsEnumerable()
-            //                     .Where(s => lId.Contains(s.Field<int>("ID")));
-            //    foreach (var line in lines)
-            //    {
-            //        line.Delete();
-            //    }
+            if (BusinessLayer.Enrollments.IsValidDelete(lEnrollments))
+            {
+               // bool deleted = false;
+                try
+                {
+                    //List<string> lId = new List<string>();
 
-            //    adapter.Update(ds.Tables["COMPANY"]);
-            //}
-            //catch (SqlException)
-            //{
-            //    Query1aPlus.Form1.UIMessage("Database: Deletion rejected");
-            //}
-            //catch (Exception)
-            //{
-            //    Query1aPlus.Form1.UIMessage("Data Layer: Deletion rejected");
-            //}
+                    foreach (Enrollments enrollElement in lEnrollments)
+                    {
+                        //lId.Add(enrollElement.StId);
+
+                        ProgramsCoursesStudentsEnrollments.Form1.UIMessage(enrollElement.StId + " " + enrollElement.CId);
+
+                        //var line = ds.Tables["Enrollments"].AsEnumerable()
+                        //         .Where(s => s.Field<string>("StId") == enrollElement.StId && s.Field<string>("CId") == enrollElement.CId).SingleOrDefault();
+                        var line = ds.Tables["Enrollments"].AsEnumerable()
+                                 .Where(s => s.Field<string>("StId").Equals(enrollElement.StId) && s.Field<string>("CId").Equals(enrollElement.CId)).SingleOrDefault();
+
+                        ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
+                        //var lines = ds.Tables["COMPANY"].AsEnumerable()
+                        //         .Where(s => lId.Contains(s.Field<int>("ID")));
+
+                        if (line != null) {
+                            line.Delete();
+                        }
+                        
+                    }
+
+                    //deleted = true;
+
+
+
+                    //List<string> lStudentId = new List<string>();
+                    ////List<string> lsCourseId = new List<string>();
+                    //int count = 0;
+
+                    //foreach (Enrollments enrollElement in lEnrollments)
+                    //{
+                    //    lStudentId.Add(enrollElement.StId);
+                    //    //lsCourseId.Add(enrollElement.CId);
+
+                    //}
+
+
+                    //var lines = ds.Tables["Enrollments"].AsEnumerable()
+                    //                 .Where(s => lStudentId.Contains(s.Field<string>("StId")));
+
+                    //foreach (var line in lines)
+                    //{
+                    //    if (line.Field<string>(0).Equals(lEnrollments[count].StId) && line.Field<string>(1).Equals(lEnrollments[count].CId))
+                    //    {
+                    //        ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
+                    //        line.Delete();
+                    //        //adapter.Update(ds.Tables["Enrollments"]);
+                    //        //ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
+                    //    }
+                    //    count++;
+                    //}
+
+                    adapter.Update(ds.Tables["Enrollments"]);
+
+                }
+                catch (SqlException)
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Database: Deletion rejected");
+                }
+                catch (Exception)
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Deletion rejected");
+                }
+            }
         }
+
+        //internal static void DeleteData(List<string> lId)
+        //{
+            
+        //    try
+        //    {
+        //        var lines = ds.Tables["Enrollments"].AsEnumerable()
+        //                            .Where(s => lId.Contains(s.Field<int>("ID")));
+        //        foreach (var line in lines)
+        //        {
+        //            line.Delete();
+        //        }
+
+        //        adapter.Update(ds.Tables["COMPANY"]);
+        //    }
+        //    catch (SqlException)
+        //    {
+        //        Query1aPlus.Form1.UIMessage("Database: Deletion rejected");
+        //    }
+        //    catch (Exception)
+        //    {
+        //        Query1aPlus.Form1.UIMessage("Data Layer: Deletion rejected");
+        //    }
+        //}
     }
 
     internal class DispalyEnrollments
