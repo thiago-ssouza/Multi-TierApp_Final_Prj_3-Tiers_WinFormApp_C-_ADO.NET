@@ -38,12 +38,6 @@ namespace prjWinCs3TierAppFinalPrj
             InitializeComponent();
         }
 
-        private void Form2_Load(object sender, EventArgs e)
-        {
-            //dtStudents = Data.Students.GetStudents();
-            //dtCourse = Data.Courses.GetCourses();
-        }
-
         internal void Start(Modes m, DataGridViewSelectedRowCollection c)
         {
             mode = m;
@@ -95,7 +89,7 @@ namespace prjWinCs3TierAppFinalPrj
                 oldCId = "" + c[0].Cells["CId"].Value;
                 oldCName = "" + c[0].Cells["CName"].Value;
 
-    }
+            }
 
             ShowDialog();
         }

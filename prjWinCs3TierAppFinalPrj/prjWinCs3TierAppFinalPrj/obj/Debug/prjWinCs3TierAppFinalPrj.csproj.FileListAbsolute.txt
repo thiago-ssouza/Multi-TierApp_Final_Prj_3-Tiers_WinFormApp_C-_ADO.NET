@@ -10,3 +10,4 @@ C:\Users\Thiago\source\repos\2023\Lasalle\Winter\420-DA3-AS-MULTI-TIER\Multi-Tie
 C:\Users\Thiago\source\repos\2023\Lasalle\Winter\420-DA3-AS-MULTI-TIER\Multi-TierApp_Final_Prj_3Tiers_WinCs_ADO.NET\prjWinCs3TierAppFinalPrj\prjWinCs3TierAppFinalPrj\bin\Debug\prjWinCs3TierAppFinalPrj.pdb
 C:\Users\Thiago\source\repos\2023\Lasalle\Winter\420-DA3-AS-MULTI-TIER\Multi-TierApp_Final_Prj_3Tiers_WinCs_ADO.NET\prjWinCs3TierAppFinalPrj\prjWinCs3TierAppFinalPrj\obj\Debug\prjWinCs3TierAppFinalPrj.exe
 C:\Users\Thiago\source\repos\2023\Lasalle\Winter\420-DA3-AS-MULTI-TIER\Multi-TierApp_Final_Prj_3Tiers_WinCs_ADO.NET\prjWinCs3TierAppFinalPrj\prjWinCs3TierAppFinalPrj\obj\Debug\prjWinCs3TierAppFinalPrj.pdb
+C:\Users\Thiago\source\repos\2023\Lasalle\Winter\420-DA3-AS-MULTI-TIER\Multi-TierApp_Final_Prj_3Tiers_WinCs_ADO.NET\prjWinCs3TierAppFinalPrj\prjWinCs3TierAppFinalPrj\obj\Debug\prjWinCs3TierAppFinalPrj.Form3.resources

@@ -142,6 +142,26 @@ namespace BusinessLayer
             return false;
         }
 
+        internal static bool IsValidFinalGrade(Data.Enrollments enroll)
+        {
+            DataSet ds = Data.DataTables.getDataSet();
+
+            DataTable dtEnrollments = ds.Tables["Enrollments"];
+
+            if (enroll.FinalGrade.ToString().Equals("") || (enroll.FinalGrade >= 0 && enroll.FinalGrade <= 100)) {
+                foreach (DataRow enrollRow in dtEnrollments.Rows)
+                {
+                    if ((enrollRow["StId"].Equals(enroll.StId) && enrollRow["CId"].Equals(enroll.CId)))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Final Grade Modification rejected");
+            return false;
+        }
+
 
         internal static bool IsValidDelete(List<Data.Enrollments> lEnrollments)
         {

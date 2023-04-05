@@ -373,11 +373,37 @@ namespace Data
             }
         }
 
+        internal static void ManageFinalGrade(Enrollments enroll)
+        {
+            if (BusinessLayer.Enrollments.IsValidFinalGrade(enroll))
+            {
+                try
+                {
+                    var line = ds.Tables["Enrollments"].AsEnumerable()
+                                 .Where(s => s.Field<string>("StId") == enroll.StId && s.Field<string>("CId") == enroll.CId).SingleOrDefault();
+
+                    if (line != null)
+                    {
+                        line.SetField("FinalGrade", enroll.FinalGrade);
+
+                        adapter.Update(ds.Tables["Enrollments"]);
+                    }
+                }
+                catch (SqlException)
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Database: Update rejected");
+                }
+                catch (Exception)
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Update rejected");
+                }
+            }
+        }
+
         internal static void UpdateData(Enrollments enroll)
         {
             if (BusinessLayer.Enrollments.IsValidUpdate(enroll))
             {
-                //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("ENTROU");
                 try
                 {
                     var line = ds.Tables["Enrollments"].AsEnumerable()
@@ -385,7 +411,6 @@ namespace Data
 
                     if (line != null)
                     {
-                        //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("ENTROU 2");
                         line.SetField("CId", enroll.CId);
                         line.SetField("FinalGrade", enroll.FinalGrade);
 
@@ -428,7 +453,13 @@ namespace Data
                         //         .Where(s => lId.Contains(s.Field<int>("ID")));
 
                         if (line != null) {
+                            if (line.Field<Int32?>("FinalGrade") != null)
+                            {
+                                //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Cannot delete the row that has a final grade");
+                                continue;
+                            }
                             line.Delete();
+
                         }
                         
                     }

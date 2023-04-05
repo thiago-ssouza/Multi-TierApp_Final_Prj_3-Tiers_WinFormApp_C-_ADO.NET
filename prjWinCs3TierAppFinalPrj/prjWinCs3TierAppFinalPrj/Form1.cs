@@ -31,6 +31,8 @@ namespace ProgramsCoursesStudentsEnrollments
             init = false;
             new Form2();
             Form2.current.Visible = false;
+            new Form3();
+            Form3.current.Visible = false;
             dataGridView1.Dock = DockStyle.Fill;
         }
 
@@ -270,6 +272,23 @@ namespace ProgramsCoursesStudentsEnrollments
 
         private void manageFinalGradeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
+            DataGridViewSelectedRowCollection c = dataGridView1.SelectedRows;
+            if (c.Count == 0)
+            {
+                MessageBox.Show("A line must be selected for update");
+            }
+            else if (c.Count > 1)
+            {
+                MessageBox.Show("Only one line must be selected for update");
+            }
+            else
+            {
+                Form3.current.Start(c);
+                init = false;
+                BusinessLayer.Enrollments.UpdateEnrollments();
+                dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+            }
 
             init = false;
 
