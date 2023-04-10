@@ -218,7 +218,7 @@ namespace Data
                 }
             );
             myFK2.DeleteRule = Rule.None;
-            myFK2.UpdateRule = Rule.None;
+            myFK2.UpdateRule = Rule.Cascade;
             ds.Tables["Enrollments"].Constraints.Add(myFK2);
 
             // =========================================================================  
@@ -246,20 +246,27 @@ namespace Data
         {
             return ds;
         }
+        internal static void ReInitDataSet()
+        {
+            ds = InitDataSet();
+        }
     }
 
     internal class Programs
     {
         private static SqlDataAdapter adapter = DataTables.getAdapterPrograms();
-        private static DataSet ds = DataTables.getDataSet();
+        //private static DataSet ds = DataTables.getDataSet();
+        private static DataSet ds;
 
         internal static DataTable GetPrograms()
         {
+            ds = DataTables.getDataSet();
             return ds.Tables["Programs"];
         }
 
         internal static int UpdatePrograms()
         {
+            ds = DataTables.getDataSet();
             if (!ds.Tables["Programs"].HasErrors)
             {
                 return adapter.Update(ds.Tables["Programs"]);
@@ -274,15 +281,17 @@ namespace Data
     internal class Courses
     {
         private static SqlDataAdapter adapter = DataTables.getAdapterCourses();
-        private static DataSet ds = DataTables.getDataSet();
+        private static DataSet ds;
 
         internal static DataTable GetCourses()
         {
+            ds = DataTables.getDataSet();
             return ds.Tables["Courses"];
         }
 
         internal static int UpdateCourses()
         {
+            ds = DataTables.getDataSet();
             if (!ds.Tables["Courses"].HasErrors)
             {
                 return adapter.Update(ds.Tables["Courses"]);
@@ -297,15 +306,19 @@ namespace Data
     internal class Students
     {
         private static SqlDataAdapter adapter = DataTables.getAdapterStudents();
-        private static DataSet ds = DataTables.getDataSet();
+        private static DataSet ds;
+
+        
 
         internal static DataTable GetStudents()
         {
+            ds = DataTables.getDataSet();
             return ds.Tables["Students"];
         }
 
         internal static int UpdateStudents()
         {
+            ds = DataTables.getDataSet();
             if (!ds.Tables["Students"].HasErrors)
             {
                 return adapter.Update(ds.Tables["Students"]);
@@ -328,15 +341,17 @@ namespace Data
         public Int32? FinalGrade;
 
         private static SqlDataAdapter adapter = DataTables.getAdapterEnrollments();
-        private static DataSet ds = DataTables.getDataSet();
+        private static DataSet ds;
 
         internal static DataTable GetEnrollments()
         {
+            ds = DataTables.getDataSet();
             return ds.Tables["Enrollments"];
         }
 
         internal static int UpdateEnrollments()
         {
+            ds = DataTables.getDataSet();
             if (!ds.Tables["Enrollments"].HasErrors)
             {
                 return adapter.Update(ds.Tables["Enrollments"]);
@@ -364,12 +379,18 @@ namespace Data
                 catch (SqlException)
                 {
                     ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Database: Insertion rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
                 }
                 catch (Exception)
                 {
-                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Insertion rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Insertion rejected. Student course enrollment already exist!");
+                    ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
                 }
 
+            }
+            else
+            {
+                ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
             }
         }
 
@@ -392,11 +413,17 @@ namespace Data
                 catch (SqlException)
                 {
                     ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Database: Update rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
                 }
                 catch (Exception)
                 {
                     ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Update rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
                 }
+            }
+            else
+            {
+                ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
             }
         }
 
@@ -420,11 +447,17 @@ namespace Data
                 catch (SqlException)
                 {
                     ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Database: Update rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
                 }
                 catch (Exception)
                 {
                     ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Update rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
                 }
+            }
+            else
+            {
+                ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
             }
         }
 
@@ -536,11 +569,17 @@ namespace Data
                 catch (SqlException)
                 {
                     ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Database: Deletion rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
                 }
                 catch (Exception)
                 {
                     ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Data Layer: Deletion rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
                 }
+            }
+            else
+            {
+                ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
             }
         }
 
@@ -575,6 +614,16 @@ namespace Data
         private static DataSet ds = DataTables.getDataSet();
         internal static DataTable GetDisplayEnrollments()
         {
+            /* 
+             * next line is needed to ensure "delete row"
+             * due to the cascade are actually removed.
+             */
+            ds.Tables["Enrollments"].AcceptChanges();
+            DataTables.ReInitDataSet();
+            ds = DataTables.getDataSet();
+
+
+
             var query = (
             from enrollment in ds.Tables["Enrollments"].AsEnumerable()
             from student in ds.Tables["Students"].AsEnumerable()

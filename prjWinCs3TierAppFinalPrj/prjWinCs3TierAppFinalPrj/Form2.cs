@@ -181,6 +181,7 @@ namespace prjWinCs3TierAppFinalPrj
         private void btnCancel_Click(object sender, EventArgs e)
         {
             Close();
+            ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
         }
     }
 }

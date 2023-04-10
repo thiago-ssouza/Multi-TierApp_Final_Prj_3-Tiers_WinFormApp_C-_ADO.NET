@@ -92,7 +92,7 @@ namespace prjWinCs3TierAppFinalPrj
                 try { enroll.FinalGrade = int.Parse(txtFinalGrade.Text); }
                 catch (Exception)
                 {
-                    MessageBox.Show("Final Grade must be an integer or live in it empty");
+                    MessageBox.Show("Final Grade must be an integer or live it empty");
                     return;
                 }
             }
@@ -110,6 +110,7 @@ namespace prjWinCs3TierAppFinalPrj
         private void btnCancel_Click(object sender, EventArgs e)
         {
             Close();
+            ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
         }
     }
 }

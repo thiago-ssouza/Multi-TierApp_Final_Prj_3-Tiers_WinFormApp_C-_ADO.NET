@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BusinessLayer
@@ -16,7 +17,32 @@ namespace BusinessLayer
             //  Business rules for Students
             // =========================================================================
 
-            return Data.Students.UpdateStudents();
+            DataSet ds = Data.DataTables.getDataSet();
+
+            DataTable dt = ds.Tables["Students"]
+                              .GetChanges(DataRowState.Added | DataRowState.Modified);
+            if ((dt != null) && (dt.Rows.Count == 1))
+            {
+                string studentsRegex = "^S\\d{9}$";
+                string programsRegex = "^P\\d{4}$";
+                DataRow r = dt.Rows[0];
+                if (Regex.IsMatch(("" + r["StId"]), studentsRegex) && !(("" + r["StName"]).Equals("")) && Regex.IsMatch(("" + r["ProgId"]), programsRegex))
+                {
+                    return Data.Students.UpdateStudents();
+                }
+                else
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Students Insertion/Update rejected: Student Id must have S (uppercase) and followed by 9 digits\nProgId must have P (uppercase) and followed by 4 digits\"");
+                    ds.Tables["Students"].RejectChanges();
+                    return -1;
+                }
+            }
+            else
+            {
+                return Data.Students.UpdateStudents();
+            }
+
+            //return Data.Students.UpdateStudents();
         }
     }
 
@@ -87,13 +113,13 @@ namespace BusinessLayer
                             return true;
                         }
                     }
-                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Addition/Modification rejetée");
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Addition/Modification rejected. Course must be in the same Program of the Student.");
                     return false;
                 }
-                ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Addition/Modification rejetée");
+                ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Addition/Modification rejected. Course must be in the same Program of the Student.");
                 return false;
             }
-            ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Addition/Modification rejected");
+            ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Addition/Modification rejected. Course must be in the same Program of the Student.");
             return false;
         }
 
@@ -138,7 +164,7 @@ namespace BusinessLayer
                     }
                 }
             }
-            ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Addition/Modification rejected");
+            ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Addition/Modification rejected. Course must be in the same Program of the Student.");
             return false;
         }
 
@@ -158,7 +184,7 @@ namespace BusinessLayer
                 }
             }
 
-            ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Final Grade Modification rejected");
+            ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Final Grade Modification rejected. Final Grade can be empty or int number between 0 - 100");
             return false;
         }
 
@@ -177,7 +203,7 @@ namespace BusinessLayer
                 if (!(enrollElement.FinalGrade.ToString().Equals(""))  )
                 {
                     //ProgramsCoursesStudentsEnrollments.Form1.UIMessage(""+enrollElement.FinalGrade);
-                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Deletion rejected");
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Business Rules: Deletion rejected. The One or more Final Grade is already set.");
                     return false;
                 }
             }
@@ -234,7 +260,31 @@ namespace BusinessLayer
             //  Business rules for Courses
             // =========================================================================
 
-            return Data.Courses.UpdateCourses();
+            DataSet ds = Data.DataTables.getDataSet();
+
+            DataTable dt = ds.Tables["Courses"]
+                              .GetChanges(DataRowState.Added | DataRowState.Modified);
+            if ((dt != null) && (dt.Rows.Count == 1))
+            {
+                string coursesRegex = "^C\\d{6}$";
+                string programsRegex = "^P\\d{4}$";
+                DataRow r = dt.Rows[0];
+                if (Regex.IsMatch(("" + r["CId"]), coursesRegex) && !(("" + r["CName"]).Equals("")) && Regex.IsMatch(("" + r["ProgId"]), programsRegex))
+                {
+                    return Data.Courses.UpdateCourses();
+                }
+                else
+                {
+                    ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Courses Insertion/Update rejected: Course Id must have C (uppercase) and followed by 6 digits\nProgId must have P (uppercase) and followed by 4 digits\"");
+                    ds.Tables["Courses"].RejectChanges();
+                    return -1;
+                }
+            }
+            else
+            {
+                return Data.Courses.UpdateCourses();
+            }
+
         }
     }
 
@@ -246,7 +296,52 @@ namespace BusinessLayer
             //  Business rules for Programs
             // =========================================================================
 
-            return Data.Programs.UpdatePrograms();
+            DataSet ds = Data.DataTables.getDataSet();
+
+            DataTable dt = ds.Tables["Programs"]
+                              .GetChanges(DataRowState.Added | DataRowState.Modified | DataRowState.Deleted);
+
+            if ((dt != null) && (dt.Rows.Count == 1))
+            {
+                DataRow r = dt.Rows[0];
+                if (r.RowState == DataRowState.Added || r.RowState == DataRowState.Modified)
+                {
+                    string programsRegex = "^P\\d{4}$";
+                    
+                    if (Regex.IsMatch(("" + r["ProgId"]), programsRegex) && !(("" + r["ProgName"]).Equals("")))
+                    {
+                        return Data.Programs.UpdatePrograms();
+                    }
+                    else
+                    {
+                        ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Programs Insertion/Update rejected: ProgId must have P (uppercase) and followed by 4 digits\"");
+                        ds.Tables["Programs"].RejectChanges();
+                        return -1;
+                    }
+                }
+                //else if (r.RowState == DataRowState.Deleted)
+                else
+                {
+                    var lines = ds.Tables["Students"].AsEnumerable()
+                                     .Where(s => s.Field<string>("ProgId") == ("" + r["ProgId"]));
+                    if(lines == null)
+                    {
+                        return Data.Programs.UpdatePrograms();
+                    }
+                    else
+                    {
+                        ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Programs Delete rejected: There are students in the Program\"");
+                        ds.Tables["Programs"].RejectChanges();
+                        return -1;
+                    }
+                }
+                
+            }
+            else
+            {
+                return Data.Programs.UpdatePrograms();
+            }
+
         }
     }
 

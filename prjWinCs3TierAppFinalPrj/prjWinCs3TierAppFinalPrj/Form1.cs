@@ -18,6 +18,7 @@ namespace ProgramsCoursesStudentsEnrollments
     {
         internal static Form1 current;
         internal static Boolean init;
+        internal static Boolean hasError = false;
 
         internal DataGridViewSelectedRowCollection c;
         public Form1()
@@ -55,6 +56,8 @@ namespace ProgramsCoursesStudentsEnrollments
             dataGridView1.Columns["StId"].DisplayIndex = 0;
             dataGridView1.Columns["StName"].DisplayIndex = 1;
             dataGridView1.Columns["ProgId"].DisplayIndex = 2;
+            init = false;
+
         }
 
         private void enrollmentsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -79,8 +82,12 @@ namespace ProgramsCoursesStudentsEnrollments
                 //dataGridView1.Columns["CId"].DisplayIndex = 1;
                 //dataGridView1.Columns["FinalGrade"].DisplayIndex = 2;
 
-                dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
-                dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
+                //dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                //dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
+
+                bindingSourceEnrollments.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                bindingSourceEnrollments.Sort = "StId, CId";    // using bindingSource to sort by two columns
+                dataGridView1.DataSource = bindingSourceEnrollments;
 
                 dataGridView1.Columns["StId"].HeaderText = "Student ID";
                 dataGridView1.Columns["StName"].HeaderText = "Student Name";
@@ -149,34 +156,77 @@ namespace ProgramsCoursesStudentsEnrollments
 
         private void bindingSourceStudents_CurrentChanged(object sender, EventArgs e)
         {
-            BusinessLayer.Students.UpdateStudents();
+            if (BusinessLayer.Students.UpdateStudents() == -1)
+            {
+                Data.DataTables.ReInitDataSet();
+                bindingSourceStudents.DataSource = Data.Students.GetStudents();
+            }
             init = false;
         }
 
         private void bindingSourceCourses_CurrentChanged(object sender, EventArgs e)
         {
-            BusinessLayer.Courses.UpdateCourses();
+            if (BusinessLayer.Courses.UpdateCourses() == -1)
+            {
+                Data.DataTables.ReInitDataSet();
+                bindingSourceCourses.DataSource = Data.Courses.GetCourses();
+            }
             init = false;
         }
 
         private void bindingSourcePrograms_CurrentChanged(object sender, EventArgs e)
         {
-            BusinessLayer.Programs.UpdatePrograms();
+            if (BusinessLayer.Programs.UpdatePrograms() == -1)
+            {
+                Data.DataTables.ReInitDataSet();
+                bindingSourcePrograms.DataSource = Data.Programs.GetPrograms();
+            }
             init = false;
         }
 
         private void dataGridView1_DataSourceChanged(object sender, EventArgs e)
         {
-            BusinessLayer.Students.UpdateStudents();
+            if(BusinessLayer.Students.UpdateStudents() == -1)
+            {
+                Data.DataTables.ReInitDataSet();
+                bindingSourceStudents.DataSource = Data.Students.GetStudents();
+            }
+            
+            
             BusinessLayer.Enrollments.UpdateEnrollments();
-            BusinessLayer.Courses.UpdateCourses();
-            BusinessLayer.Programs.UpdatePrograms();
+
+            if (BusinessLayer.Courses.UpdateCourses() == -1)
+            {
+                Data.DataTables.ReInitDataSet();
+                bindingSourceCourses.DataSource = Data.Courses.GetCourses();
+            }
+
+            if (BusinessLayer.Programs.UpdatePrograms() == -1)
+            {
+                Data.DataTables.ReInitDataSet();
+                bindingSourcePrograms.DataSource = Data.Programs.GetPrograms();
+            }
             init = false;
         }
 
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
+            
             MessageBox.Show("Impossible to insert / update / delete");
+            MessageBox.Show(e.ToString());
+
+            DataSet ds = Data.DataTables.getDataSet();
+
+            ds.Tables["Programs"].RejectChanges();
+            ds.Tables["Courses"].RejectChanges();
+            ds.Tables["Students"].RejectChanges();
+            ds.Tables["Enrollments"].RejectChanges();
+            bindingSourceStudents.DataSource = Data.Students.GetStudents();
+            bindingSourceCourses.DataSource = Data.Courses.GetCourses();
+            bindingSourcePrograms.DataSource = Data.Programs.GetPrograms();
+            //dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+
+
         }
 
         internal static void msgInvalidFinalGrade()
@@ -187,9 +237,15 @@ namespace ProgramsCoursesStudentsEnrollments
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form2.current.Start(Form2.Modes.INSERT, null);
-            init = false;
-            BusinessLayer.Enrollments.UpdateEnrollments();
-            dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+
+            if (!hasError)
+            {
+                BusinessLayer.Enrollments.UpdateEnrollments();
+                bindingSourceEnrollments.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                dataGridView1.DataSource = bindingSourceEnrollments;
+                init = true;
+            }
+            hasError = false;
 
         }
 
@@ -207,9 +263,14 @@ namespace ProgramsCoursesStudentsEnrollments
             else
             {
                 Form2.current.Start(Form2.Modes.UPDATE, c);
-                init = false;
-                BusinessLayer.Enrollments.UpdateEnrollments();
-                dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                if (!hasError)
+                {
+                    BusinessLayer.Enrollments.UpdateEnrollments();
+                    bindingSourceEnrollments.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                    dataGridView1.DataSource = bindingSourceEnrollments;
+                    init = true;
+                }
+                hasError = false;
             }
         }
 
@@ -245,9 +306,14 @@ namespace ProgramsCoursesStudentsEnrollments
                     lEnrollments.Add(enroll);
                 }
                 Data.Enrollments.DeleteData(lEnrollments);
-                BusinessLayer.Enrollments.UpdateEnrollments();
-                dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
-                init = false;
+                if (!hasError)
+                {
+                    BusinessLayer.Enrollments.UpdateEnrollments();
+                    bindingSourceEnrollments.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                    dataGridView1.DataSource = bindingSourceEnrollments;
+                    init = true;
+                }
+                hasError = false;
             }
         }
 
@@ -285,18 +351,29 @@ namespace ProgramsCoursesStudentsEnrollments
             else
             {
                 Form3.current.Start(c);
-                init = false;
-                BusinessLayer.Enrollments.UpdateEnrollments();
-                dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                if (!hasError)
+                {
+                    BusinessLayer.Enrollments.UpdateEnrollments();
+                    bindingSourceEnrollments.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
+                    dataGridView1.DataSource = bindingSourceEnrollments;
+                    init = true;
+                }
             }
 
-            init = false;
+            hasError = false;
+
+            //init = false;
 
         }
 
         internal static void UIMessage(string msg)
         {
             MessageBox.Show(msg);
+        }
+
+        private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            //UIMessage("ENTER HERE");
         }
     }
 
