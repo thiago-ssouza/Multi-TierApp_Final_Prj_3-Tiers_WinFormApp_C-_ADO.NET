@@ -285,6 +285,7 @@ namespace Data
 
         internal static DataTable GetCourses()
         {
+           //ds.Tables["Courses"].AcceptChanges();
             ds = DataTables.getDataSet();
             return ds.Tables["Courses"];
         }
@@ -294,6 +295,7 @@ namespace Data
             ds = DataTables.getDataSet();
             if (!ds.Tables["Courses"].HasErrors)
             {
+                ds.Tables["Courses"].AcceptChanges();
                 return adapter.Update(ds.Tables["Courses"]);
             }
             else
@@ -308,8 +310,6 @@ namespace Data
         private static SqlDataAdapter adapter = DataTables.getAdapterStudents();
         private static DataSet ds;
 
-        
-
         internal static DataTable GetStudents()
         {
             ds = DataTables.getDataSet();
@@ -318,9 +318,11 @@ namespace Data
 
         internal static int UpdateStudents()
         {
+         
             ds = DataTables.getDataSet();
             if (!ds.Tables["Students"].HasErrors)
             {
+                ds.Tables["Students"].AcceptChanges();
                 return adapter.Update(ds.Tables["Students"]);
             }
             else
@@ -468,78 +470,13 @@ namespace Data
                // bool deleted = false;
                 try
                 {
-                    //List<string> lId = new List<string>();
-
-                    //foreach (Enrollments enrollElement in lEnrollments)
-                    //{
-                    //    //lId.Add(enrollElement.StId);
-
-                    //    ProgramsCoursesStudentsEnrollments.Form1.UIMessage(enrollElement.StId + " " + enrollElement.CId);
-
-                    //    //var line = ds.Tables["Enrollments"].AsEnumerable()
-                    //    //         .Where(s => s.Field<string>("StId") == enrollElement.StId && s.Field<string>("CId") == enrollElement.CId).SingleOrDefault();
-                    //    var line = ds.Tables["Enrollments"].AsEnumerable()
-                    //             .Where(s => s.Field<string>("StId").Equals(enrollElement.StId) && s.Field<string>("CId").Equals(enrollElement.CId)).SingleOrDefault();
-
-                    //    ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
-                    //    //var lines = ds.Tables["COMPANY"].AsEnumerable()
-                    //    //         .Where(s => lId.Contains(s.Field<int>("ID")));
-
-                    //    if (line != null) {
-                    //        //if (line.Field<Int32?>("FinalGrade") != null)
-                    //        //{
-                    //        //    //ProgramsCoursesStudentsEnrollments.Form1.UIMessage("Cannot delete the row that has a final grade");
-                    //        //    continue;
-                    //        //}
-                    //        line.Delete();
-
-                    //    }
-
-                    //}
-
-                    //deleted = true;
-
-
-
-                    //List<string> lStudentId = new List<string>();
-                    ////List<string> lsCourseId = new List<string>();
-                    //int count = 0;
-
-                    //foreach (Enrollments enrollElement in lEnrollments)
-                    //{
-                    //    lStudentId.Add(enrollElement.StId);
-                    //    //lsCourseId.Add(enrollElement.CId);
-
-                    //}
-
-
-                    //var lines = ds.Tables["Enrollments"].AsEnumerable()
-                    //                 .Where(s => lStudentId.Contains(s.Field<string>("StId")));
-
-                    //foreach (var line in lines)
-                    //{
-                    //    if (line.Field<string>(0).Equals(lEnrollments[count].StId) && line.Field<string>(1).Equals(lEnrollments[count].CId))
-                    //    {
-                    //        ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
-                    //        line.Delete();
-                    //        //adapter.Update(ds.Tables["Enrollments"]);
-                    //        //ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
-                    //    }
-                    //    count++;
-                    //}
-
-
-
-
-
+                    
                     List<string> lStudentId = new List<string>();
-                    //List<string> lsCourseId = new List<string>();
                     int count = 0;
 
                     foreach (Enrollments enrollElement in lEnrollments)
                     {
                         lStudentId.Add(enrollElement.StId);
-                        //lsCourseId.Add(enrollElement.CId);
 
                     }
 
@@ -549,14 +486,10 @@ namespace Data
 
                     foreach (var line in lines)
                     {
-                        //ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
                         if (line.Field<string>(0).Equals(lEnrollments[count].StId) && line.Field<string>(1).Equals(lEnrollments[count].CId))
                         {
-                            //ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
                             line.Delete();
                             count++;
-                            //adapter.Update(ds.Tables["Enrollments"]);
-                            //ProgramsCoursesStudentsEnrollments.Form1.UIMessage(line.Field<string>(0) + " " + line.Field<string>(1));
                         }
                     }
 
@@ -582,30 +515,6 @@ namespace Data
                 ProgramsCoursesStudentsEnrollments.Form1.hasError = true;
             }
         }
-
-        //internal static void DeleteData(List<string> lId)
-        //{
-            
-        //    try
-        //    {
-        //        var lines = ds.Tables["Enrollments"].AsEnumerable()
-        //                            .Where(s => lId.Contains(s.Field<int>("ID")));
-        //        foreach (var line in lines)
-        //        {
-        //            line.Delete();
-        //        }
-
-        //        adapter.Update(ds.Tables["COMPANY"]);
-        //    }
-        //    catch (SqlException)
-        //    {
-        //        Query1aPlus.Form1.UIMessage("Database: Deletion rejected");
-        //    }
-        //    catch (Exception)
-        //    {
-        //        Query1aPlus.Form1.UIMessage("Data Layer: Deletion rejected");
-        //    }
-        //}
     }
 
     internal class DispalyEnrollments
@@ -641,13 +550,9 @@ namespace Data
                 StName = student.Field<string>("StName"),
                 CId = course.Field<String>("CId"),
                 CName = course.Field<string>("CName"),
-                /// System.InvalidCastException: 'Cannot cast DBNull.Value to type 'System.Int32'. Please use a nullable type.'
-                //FinalGrade = enrollment.Field<Int32>("FinalGrade"),
                 FinalGrade = enrollment.Field<Int32?>("FinalGrade"),
                 ProgId = program.Field<String>("ProgId"),
                 ProgName = program.Field<string>("ProgName")
-                //StId, StName, CId, CName, FinalGrade, ProgId, ProgName
-                // and other columns you may need
             });
             DataTable result = new DataTable();
             result.Columns.Add("StId");
@@ -657,8 +562,6 @@ namespace Data
             result.Columns.Add("FinalGrade");
             result.Columns.Add("ProgId");
             result.Columns.Add("ProgName");
-            //StId, StName, CId, CName, FinalGrade, ProgId, ProgName
-            // and other columns you may need
             foreach (var x in query)
             {
                 object[] allFields = { x.StId, x.StName, x.CId, x.CName, x.FinalGrade, x.ProgId, x.ProgName};

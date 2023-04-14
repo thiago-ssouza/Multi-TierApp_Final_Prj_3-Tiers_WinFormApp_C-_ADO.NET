@@ -148,17 +148,7 @@ namespace prjWinCs3TierAppFinalPrj
                     MessageBox.Show("Student Id and Course Id selected");
                     return;
                 }
-                
-                //try { 
-                //    enroll.StId = cboxStudentId.Text;
-                //    enroll.CId = cboxCourseId.Text;
-                //}
-                //catch (Exception)
-                //{
-                //    MessageBox.Show("Student Id and Course Id selected");
-                //    textBox1.Text = "";
-                //    return;
-                //}
+
             }
             if (mode == Modes.UPDATE)
             {

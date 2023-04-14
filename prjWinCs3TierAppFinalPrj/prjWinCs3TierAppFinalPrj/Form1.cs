@@ -71,17 +71,6 @@ namespace ProgramsCoursesStudentsEnrollments
                 dataGridView1.Dock = DockStyle.Fill;
                 dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-                //dataGridView1.DataSource = Data.Enrollments.GetEnrollments();
-
-                //dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
-
-                //dataGridView1.Columns["StId"].HeaderText = "Student ID";
-                //dataGridView1.Columns["CId"].HeaderText = "Course ID";
-                //dataGridView1.Columns["FinalGrade"].HeaderText = "Final Grade";
-                //dataGridView1.Columns["StId"].DisplayIndex = 0;
-                //dataGridView1.Columns["CId"].DisplayIndex = 1;
-                //dataGridView1.Columns["FinalGrade"].DisplayIndex = 2;
-
                 //dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
                 //dataGridView1.Sort(dataGridView1.Columns["StId"], ListSortDirection.Ascending);
 
@@ -161,6 +150,7 @@ namespace ProgramsCoursesStudentsEnrollments
                 Data.DataTables.ReInitDataSet();
                 bindingSourceStudents.DataSource = Data.Students.GetStudents();
             }
+
             init = false;
         }
 
@@ -171,6 +161,7 @@ namespace ProgramsCoursesStudentsEnrollments
                 Data.DataTables.ReInitDataSet();
                 bindingSourceCourses.DataSource = Data.Courses.GetCourses();
             }
+
             init = false;
         }
 
@@ -213,7 +204,7 @@ namespace ProgramsCoursesStudentsEnrollments
         {
             
             MessageBox.Show("Impossible to insert / update / delete");
-            MessageBox.Show(e.ToString());
+            //MessageBox.Show(e.ToString());
 
             DataSet ds = Data.DataTables.getDataSet();
 
@@ -224,6 +215,8 @@ namespace ProgramsCoursesStudentsEnrollments
             bindingSourceStudents.DataSource = Data.Students.GetStudents();
             bindingSourceCourses.DataSource = Data.Courses.GetCourses();
             bindingSourcePrograms.DataSource = Data.Programs.GetPrograms();
+
+
             //dataGridView1.DataSource = Data.DispalyEnrollments.GetDisplayEnrollments();
 
 
@@ -301,7 +294,6 @@ namespace ProgramsCoursesStudentsEnrollments
                     {
                         enroll.FinalGrade = null;
                     }
-                    //enroll.FinalGrade = !( (""+c[i].Cells["FinalGrade"].Value).Equals("")) ? Convert.ToInt32(""+c[i].Cells["FinalGrade"].Value) : Convert.ToInt32(null);
 
                     lEnrollments.Add(enroll);
                 }
@@ -316,25 +308,6 @@ namespace ProgramsCoursesStudentsEnrollments
                 hasError = false;
             }
         }
-
-        //private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    DataGridViewSelectedRowCollection c = dataGridView1.SelectedRows;
-        //    if (c.Count == 0)
-        //    {
-        //        MessageBox.Show("At least one line must be selected for deletion");
-        //    }
-        //    else // (c.Count > 1)
-        //    {
-        //        List<string> lId = new List<string>();
-        //        for (int i = 0; i < c.Count; i++)
-        //        {
-        //            lId.Add("" + c[i].Cells["StId"].Value);
-        //        }
-        //        Data.Enrollments.DeleteData(lId);
-        //        init = false;
-        //    }
-        //}
 
         private void manageFinalGradeToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -358,6 +331,7 @@ namespace ProgramsCoursesStudentsEnrollments
                     dataGridView1.DataSource = bindingSourceEnrollments;
                     init = true;
                 }
+                //hasError = false;
             }
 
             hasError = false;
