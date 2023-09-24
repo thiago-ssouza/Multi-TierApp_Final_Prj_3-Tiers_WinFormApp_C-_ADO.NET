@@ -13,7 +13,11 @@ Content:
 <br/>
 - OOP
 <br/>
-- 3Tier application
+- 3-Tier application
+<br/>
+- Windows Forms
+<br/>
+- ADO.NET
 <br/>
 - MVC - Model View Controller (Pattern)
 <br/>
