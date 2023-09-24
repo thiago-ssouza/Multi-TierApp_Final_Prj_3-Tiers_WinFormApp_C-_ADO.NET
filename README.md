@@ -15,7 +15,7 @@ Content:
 <br/>
 - 3-Tier application
 <br/>
-- Windows Forms
+- Windows Form
 <br/>
 - ADO.NET
 <br/>
